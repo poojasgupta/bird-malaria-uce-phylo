@@ -1,5 +1,10 @@
 # Bird-malaria-uce
 
+This repository contains a series of commands and scripts I used for processing sequence capture data for malaria parasites. The sequence capture data was generated using custom malaria UCE probes targeting conserved loci across all representative Plasmodium and Haemoproteus (malaria parasite) genomes. My goal was to obtain good quality genomic data for avian malaria parasites and resolve its evolutionary relationships with other mammalian malaria parasites. I have mostly followed steps from Phyluce package (Faircloth 2015) but includes some additional scripts that are not available from Phyluce. The analysis described in this repository is still in progress and some of the scripts are specific to the environment that the analysis is being run on. 
+
+
+![UCE-workflow-3](https://user-images.githubusercontent.com/55209373/122352278-d62c2180-cf03-11eb-8661-12b96b99f6eb.jpeg)
+
 ## Raw Read Processing
 
 1a) Count number of Reads1 in raw fastq files
@@ -46,7 +51,7 @@ i5:AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT*GTGTAGATCTCGGTGGTCGCCGTATCATT
 ```bash
 $ find . -name '*.fastq.gz' | xargs -I % sh -c 'fastqc -o ./fastqc_out %'
 ```
-For fastq files from a specific directory (in this case 'split-quality-adapter-trimmed'). Create the output directory ("split-adapt-trim-fastqc_out") if it doesnt exist. This is run in the clean-fastq folder.
+For fastq files from a specific directory (in my case 'split-quality-adapter-trimmed'). Create the output directory ("split-adapt-trim-fastqc_out") if it doesnt exist. This is run in the clean-fastq folder.
 ```
 grep split-adapter-quality-trimmed | find . -name '*.fastq.gz' | xargs -I % sh -c 'fastqc -o ./adapt-trim-fastqc-out %'   
 #"|grep PFA|" for a specific sample
@@ -55,7 +60,7 @@ After creating FastQC results, run MultiQC within that same folder "adapt-trim-f
 ```
 multiqc .
 ```
-I did notice that some of the reads still had some adapter contamination towards the end of the reads so probably Trimmotatic is not doing a very good job of removing adapter contamination. A web blog post here (https://informatics.fas.harvard.edu/best-practices-for-de-novo-transcriptome-assembly-with-trinity.html) suggested thatTrimGalore, a convenient wrapper for cutadapt, might be better at completely removing adapter contamination in reads. Yet to give a try.
+I did notice that some of the reads still had some adapter contamination towards the end of the reads so probably Trimmotatic is not doing a very good job of removing adapter contamination. A web blog post here (https://informatics.fas.harvard.edu/best-practices-for-de-novo-transcriptome-assembly-with-trinity.html) suggested thatTrimGalore, a convenient wrapper for cutadapt, might be better at completely removing adapter contamination in reads. Yet to give it a try.
 
 ## Mapping Reads to Reference Genome
   
@@ -83,7 +88,7 @@ find . -name *M.bam | xargs -I % sh -c 'printf "\n\n****************%***********
 multiqc .
 ```
 
-7) As we are only interested in keeping the reads that mapped to the parasite genome, we use **Samtools** to remove unmapped reads, keep the mapped reads. The sam file outputs Read IDs in the first column and mapped/unmapped status in the 4th column - usually ‘0’ for unmapped reads and a non-zero for mapped reads. The -f/-F options to the samtools refers to the presense/absence of bits in the FLAG field. So -f 4 looks for '0' and only output alignments that are unmapped (flag 0×0004 is set) and -F 4 looks for non-zero in the 4th column and only output alignments that are not unmapped (i.e. flag 0×0004 is not set), hence these would only include mapped alignments. 
+7) As we are only interested in keeping the reads that mapped to the parasite genome, we can use **Samtools** to remove unmapped reads, keep the mapped reads. The sam file outputs Read IDs in the first column and mapped/unmapped status in the 4th column - usually ‘0’ for unmapped reads and a non-zero for mapped reads. The -f/-F options to the samtools refers to the presense/absence of bits in the FLAG field. So -f 4 looks for '0' and only output alignments that are unmapped (flag 0×0004 is set) and -F 4 looks for non-zero in the 4th column and only output alignments that are not unmapped (i.e. flag 0×0004 is not set), hence these would only include mapped alignments. 
 
 This needs to be run in the 'bwa-par-mapping' dir.
 We can count the total number of mapped reads with the samtools -F 4 flag. Alternativley, we can count only the unmapped reads with -f 4
@@ -103,22 +108,6 @@ To verify results, count the mapped and unmapped reads and match with the output
 samtools view -c CU_084_P-CL-RG-MD-M.bam-mapped.bam
 samtools view -c CU_084_P-CL-RG-MD-M.bam-unmapped.bam
 ```
-
---Other Samtools utilities
-Here is the bitwise FLAGs description for various tasks (copied from http://samtools.github.io/hts-specs/SAMv1.pdf)
-Bit Description
-1 0x1 template having multiple segments in sequencing
-2 0x2 each segment properly aligned according to the aligner
-4 0x4 segment unmapped
-8 0x8 next segment in the template unmapped
-16 0x10 SEQ being reverse complemented
-32 0x20 SEQ of the next segment in the template being reverse complemented
-64 0x40 the first segment in the template
-128 0x80 the last segment in the template
-256 0x100 secondary alignment
-512 0x200 not passing filters, such as platform/vendor quality controls
-1024 0x400 PCR or optical duplicate
-2048 0x800 supplementary alignment
 
 8) The bam file containing the mapped reads needs to be sorted first before converting it back to Fastq files. We will sort the mapped.bam file by name/read group.
 For a single sample,
@@ -151,10 +140,6 @@ ls | xargs -I % sh -c 'filePathPrefix=/scratch/pg84794/UCE_run2/clean-fastq/$(ec
 ```
 Alternatively, if you need to output in a separate folder, use the following code. ' rev | cut -c13- | rev' means reverse the file name (.bam file) cut 13 characters from the beginning (technically last 13 characters) and then reverse it back to generate output folder names in 'clean-bam-fastq' folder. For this to work, first create the output folder (clean-bam-fastq) in the main directory. Also make sure all .bam files are in a separate 'mapped reads folder' within the bwa_par_mapping folder.
 
-```
-ls | xargs -I % sh -c 'fileNamePrefix=$(echo "%" | rev | cut -c13- | rev); filePathPrefix=/scratch/pg84794/UCE_run3/clean-bam-fastq/$fileNamePrefix;printf "\n\n****************%*********************\n"; mkdir $filePathPrefix; samtools fastq -t -1 $filePathPrefix/${fileNamePrefix}_map-READ1.fq -2 $filePathPrefix/${fileNamePrefix}_map-READ2.fq -s $filePathPrefix/${fileNamePrefix}_map-READ-singleton.fq -0 $filePathPrefix/${fileNamePrefix}_map-extra-reads.fq % -N;'
-```
-For the new dataset in UCE_run5
 ```
 ls | xargs -I % sh -c 'fileNamePrefix=$(echo "%" | rev | cut -c16- | rev); filePathPrefix=/scratch/pg84794/UCE_run5/clean-docap-bam-fastq/$fileNamePrefix;printf "\n\n****************%*********************\n"; mkdir $filePathPrefix; samtools fastq -t -1 $filePathPrefix/${fileNamePrefix}_unmap-READ1.fq -2 $filePathPrefix/${fileNamePrefix}_unmap-READ2.fq -s $filePathPrefix/${fileNamePrefix}_unmap-READ-singleton.fq -0 $filePathPrefix/${fileNamePrefix}_unmap-extra-reads.fq % -N;'
 
