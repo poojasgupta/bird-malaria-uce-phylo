@@ -19,7 +19,7 @@ This will output a concatenated Supermatrix in phylip format (relaxed, use just 
 ```bash	
 perl FASconCAT-G_v1.04.pl -s -j -n -n  -l -a
 ```
-This will output nexus format (as for MrBayes) of concatenated sequence alignment. I used and slightly edited the partition file created for MrBayes *subset1-75p-supermatrix-partition.txt* (see example below) and nexus output of concatenated sequence alignment *subset1-75p-supermatrix.nex* for downstream processing.
+This will output nexus format (as for MrBayes) of concatenated sequence alignment. I slightly edited the partition file created for MrBayes *subset1-75p-supermatrix-partition.txt* (see example below) and nexus output of concatenated sequence alignment *subset1-75p-supermatrix.nex* for downstream processing.
 ```
 [loci]
 charset uce-1990.fasta = 26221-26602;
@@ -56,16 +56,16 @@ dimensions ntax= 38 nchar= 54622;
 format datatype=dna interleave missing=-;
 matrix
 P_cyn_s0  -------------------- -------------------- -------------------- -------------------- --------------------
-DOT23268  NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN
-DOT23232  AACACGTGGACAAATTAAGA TTACAAATTATTTCAATTGT TTTTTCTTTTCTTCTACTAC CCATTCATCTGTGTGTGTGA AAAAATCTAAAGCTTCTTTA
-DOT24420  AACATGTAGATAAATTAAGA TTACAAATAACTTCAATTTC TTTTTTTTCTTTTCTACTGC CCATTCATCCGTGTGCGTAA AAAAATCTAAAGCCTCTTTA
-DOT24422  AACATGTAGATAAATTAAGA TTACAAATAACTTCAATTTC TTTTTTTTCTTTTCTACTGC CCATTCATCCGTGTGCGTAA AAAAATCTAAAGCCTCTTTA
-MSBB47825  AACAAGTAGACAAATTCAGA TTACAGATGATTTCAATTTT TTTTTTTTTTCTTCTACTAC CCATTCATCTGCGTGTGTAA AAAAATCTAATGCTTCTTTG
-H_DB09_s5  NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN
-P_homo  AACATGTAGATAAATTTAAA TTACATATAATTTCTATTTT TTTTTTTTCTCAAGTACTTC CCATTCTTCAGCATGCATAA AAAAATCAAGTGCTTCTTTA
-DOT23273  NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN
-H_tat  AACACGTGGACAAATTAAGA TTACAAATTATTTCAATTGT TTTTTCTTTTCTTCTACTAC CCATTCATCTGTGTGTGTGA AAAAATCTAAAGCTTCTTTA
-MSBB48018  -------------------- -------------------- -------------------- -------------------- --------------------
+DOT1      NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN
+DOT2      AACACGTGGACAAATTAAGA TTACAAATTATTTCAATTGT TTTTTCTTTTCTTCTACTAC CCATTCATCTGTGTGTGTGA AAAAATCTAAAGCTTCTTTA
+DOT3      AACATGTAGATAAATTAAGA TTACAAATAACTTCAATTTC TTTTTTTTCTTTTCTACTGC CCATTCATCCGTGTGCGTAA AAAAATCTAAAGCCTCTTTA
+DOT4      AACATGTAGATAAATTAAGA TTACAAATAACTTCAATTTC TTTTTTTTCTTTTCTACTGC CCATTCATCCGTGTGCGTAA AAAAATCTAAAGCCTCTTTA
+MSBB5     AACAAGTAGACAAATTCAGA TTACAGATGATTTCAATTTT TTTTTTTTTTCTTCTACTAC CCATTCATCTGCGTGTGTAA AAAAATCTAATGCTTCTTTG
+H_DB09    NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN
+P_homo    AACATGTAGATAAATTTAAA TTACATATAATTTCTATTTT TTTTTTTTCTCAAGTACTTC CCATTCTTCAGCATGCATAA AAAAATCAAGTGCTTCTTTA
+DOT5      NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN NNNNNNNNNNNNNNNNNNNN
+H_tat     AACACGTGGACAAATTAAGA TTACAAATTATTTCAATTGT TTTTTCTTTTCTTCTACTAC CCATTCATCTGTGTGTGTGA AAAAATCTAAAGCTTCTTTA
+MSB68     -------------------- -------------------- -------------------- -------------------- --------------------
 P_rel_s2  AACAAGTAGCTAAATTTAAA TGACATATAATTTCTATTTT TTTTTTTTTTCGAGTACTTC CCATTCTTCTGCATGCATAA AGAAATCAAGAGCTTCTTTA
 P_kno_s0  -------------------- -------------------- -------------------- -------------------- --------------------
 ...
@@ -89,7 +89,7 @@ charset uce_367 = 38217-39061;
 end;
 ```
 
-This program requires Python 3.6.x or higher and several dependencies so make sure, all have been installed correctly. More details can be found on the program github page [**PFinderUCE-SWSC-EN**](https://github.com/Tagliacollo/PFinderUCE-SWSC-EN). In my case I created a new conda environment *SWSC-EN* for installing all the necessary programs.
+This program requires Python 3.6.x or higher and several dependencies so make sure, all have been installed correctly. More details can be found on the program github page [**PFinderUCE-SWSC-EN**](https://github.com/Tagliacollo/PFinderUCE-SWSC-EN). In my case, I created a new conda environment *SWSC-EN* for installing all the necessary programs.
 
 ```bash
 source activate SWSC-EN
@@ -105,7 +105,7 @@ module load RAxML/8.2.11-foss-2019b-pthreads-sse
 
 PartitionFinder.py /scratch/pg84794/UCE_run5/partitioned-analysis/partition-finder --raxml -p 20
 ```
-The program will output all the result files in a separate 'analysis' fodler. Within this folder, you will find *best_scheme.txt* which contains the best-fit partitioning scheme to be used as input for different tree building programs (RAxML, MrBayes, IQtree).
+The program will output all the result files in a separate 'analysis' folder. Within this folder, you will find *best_scheme.txt* which contains the best-fit partitioning scheme to be used as input for different tree building programs (RAxML, MrBayes, IQtree).
 
 
 
