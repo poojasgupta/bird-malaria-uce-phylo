@@ -1,4 +1,4 @@
-# Bird-malaria-uce
+# Bird-malaria-uce NGS Analysis
 
 This repository contains a series of commands and scripts I used for processing sequence capture data for malaria parasites. The sequence capture data was generated using custom malaria UCE probes targeting conserved loci across all representative Plasmodium and Haemoproteus (malaria parasite) genomes. My goal was to obtain good quality genomic data for avian malaria parasites and resolve its evolutionary relationships with other mammalian malaria parasites. I have mostly followed steps from Phyluce package (Faircloth 2015) but includes some additional scripts that are not available from Phyluce. The analysis described in this repository is still in progress and some of the scripts are specific to the environment that the analysis is being run on. Some scripts are inline and others are in 'sh-files' folder. 
 
