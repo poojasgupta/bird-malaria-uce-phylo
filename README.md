@@ -288,7 +288,7 @@ I ran step 12 to obtain UCE loci matches against these reference fasta sequences
 
 ## Aligned UCE loci across samples- summary stats
 
-14) Run from the folder which contains mafft-nexus-internal-trimmed folder. 
+15) Run from the folder which contains mafft-nexus-internal-trimmed folder. 
 ```
 phyluce_align_get_align_summary_data  \
 --alignments subset2-mafft-nexus-internal-trimmed \
